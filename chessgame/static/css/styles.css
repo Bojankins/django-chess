@@ -1,6 +1,12 @@
 td {
+    height: 90px;
+    width: 90px;
+}
+
+img {
     height: 60px;
     width: 60px;
+    text-align: center;
 }
 
 .even {
@@ -10,3 +16,4 @@ td {
 .odd {
     background-color: brown;
 }
+
