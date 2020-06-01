@@ -1,6 +1,6 @@
 $( document ).ready(function() {
 
-
+    //check flipboard on selected >> empty with piece on row
     var board = $('#board');
 
     generateBoard(board);
@@ -10,25 +10,25 @@ $( document ).ready(function() {
             board.append('<tr id='+i+'></tr>');
 
             if(i == 1){
-                $('#'+i).append(`<td name="rook" class="${i} 1 odd black rook">r</td>`);
-                $('#'+i).append(`<td name="knight" class="${i} 2 even black knight">kn</td>`);
-                $('#'+i).append(`<td name="bishop" class="${i} 3 odd black bishop">b</td>`);
-                $('#'+i).append(`<td name="king" class="${i} 4 even black king">k</td>`);
-                $('#'+i).append(`<td name="queen" class="${i} 5 odd black queen">q</td>`);
-                $('#'+i).append(`<td name="bishop" class="${i} 6 even black bishop">b</td>`);
-                $('#'+i).append(`<td name="knight" class="${i} 7 odd black knight">kn</td>`);
-                $('#'+i).append(`<td name="rook" class="${i} 8 even black rook">r</td>`);
+                $('#'+i).append(`<td name="rook-black" class="${i} 1 odd black rook"></td>`);
+                $('#'+i).append(`<td name="knight-blackL" class="${i} 2 even black knight"></td>`);
+                $('#'+i).append(`<td name="bishop-black" class="${i} 3 odd black bishop"></td>`);
+                $('#'+i).append(`<td name="king-black" class="${i} 4 even black king"></td>`);
+                $('#'+i).append(`<td name="queen-black" class="${i} 5 odd black queen"></td>`);
+                $('#'+i).append(`<td name="bishop-black" class="${i} 6 even black bishop"></td>`);
+                $('#'+i).append(`<td name="knight-blackR" class="${i} 7 odd black knight"></td>`);
+                $('#'+i).append(`<td name="rook-black" class="${i} 8 even black rook"></td>`);
             }
 
             if( i == 2){
-                $('#'+i).append(`<td name="pawn" class="${i} 1 even black pawn first">p</td>`);
-                $('#'+i).append(`<td name="pawn" class="${i} 2 odd black pawn first">p</td>`);
-                $('#'+i).append(`<td name="pawn" class="${i} 3 even black pawn first">p</td>`);
-                $('#'+i).append(`<td name="pawn" class="${i} 4 odd black pawn first">p</td>`);
-                $('#'+i).append(`<td name="pawn" class="${i} 5 even black pawn first">p</td>`);
-                $('#'+i).append(`<td name="pawn" class="${i} 6 odd black pawn first">p</td>`);
-                $('#'+i).append(`<td name="pawn" class="${i} 7 even black pawn first">p</td>`);
-                $('#'+i).append(`<td name="pawn" class="${i} 8 odd black pawn first">p</td>`);
+                $('#'+i).append(`<td name="pawn-black" class="${i} 1 even black pawn first"></td>`);
+                $('#'+i).append(`<td name="pawn-black" class="${i} 2 odd black pawn first"></td>`);
+                $('#'+i).append(`<td name="pawn-black" class="${i} 3 even black pawn first"></td>`);
+                $('#'+i).append(`<td name="pawn-black" class="${i} 4 odd black pawn first"></td>`);
+                $('#'+i).append(`<td name="pawn-black" class="${i} 5 even black pawn first"></td>`);
+                $('#'+i).append(`<td name="pawn-black" class="${i} 6 odd black pawn first"></td>`);
+                $('#'+i).append(`<td name="pawn-black" class="${i} 7 even black pawn first"></td>`);
+                $('#'+i).append(`<td name="pawn-black" class="${i} 8 odd black pawn first"></td>`);
             }
 
 
@@ -49,58 +49,75 @@ $( document ).ready(function() {
                             $('#'+i).append(`<td class="${i} ${j} even empty"></td>`);
                         }else{
                             $('#'+i).append(`<td class="${i} ${j} odd empty"></td>`);
-                        };
-                    };
-                };  
+                        }
+                    }
+                }
             } 
 
             if(i == 7){
-                $('#'+i).append(`<td name="pawn" class="${i} 1 odd white pawn first">p</td>`);
-                $('#'+i).append(`<td name="pawn" class="${i} 2 even white pawn first">p</td>`);
-                $('#'+i).append(`<td name="pawn" class="${i} 3 odd white pawn first">p</td>`);
-                $('#'+i).append(`<td name="pawn" class="${i} 4 even white pawn first">p</td>`);
-                $('#'+i).append(`<td name="pawn" class="${i} 5 odd white pawn first">p</td>`);
-                $('#'+i).append(`<td name="pawn" class="${i} 6 even white pawn first">p</td>`);
-                $('#'+i).append(`<td name="pawn" class="${i} 7 odd white pawn first">p</td>`);
-                $('#'+i).append(`<td name="pawn" class="${i} 8 even white pawn first">p</td>`);
+                $('#'+i).append(`<td name="pawn-white" class="${i} 1 odd white pawn first"></td>`);
+                $('#'+i).append(`<td name="pawn-white" class="${i} 2 even white pawn first"></td>`);
+                $('#'+i).append(`<td name="pawn-white" class="${i} 3 odd white pawn first"></td>`);
+                $('#'+i).append(`<td name="pawn-white" class="${i} 4 even white pawn first"></td>`);
+                $('#'+i).append(`<td name="pawn-white" class="${i} 5 odd white pawn first"></td>`);
+                $('#'+i).append(`<td name="pawn-white" class="${i} 6 even white pawn first"></td>`);
+                $('#'+i).append(`<td name="pawn-white" class="${i} 7 odd white pawn first"></td>`);
+                $('#'+i).append(`<td name="pawn-white" class="${i} 8 even white pawn first"></td>`);
             }
             if(i == 8){
-                $('#'+i).append(`<td name="rook" class="${i} 1 even white rook">r</td>`);
-                $('#'+i).append(`<td name="knight" class="${i} 2 odd white knight">kn</td>`);
-                $('#'+i).append(`<td name="bishop" class="${i} 3 even white bishop">b</td>`);
-                $('#'+i).append(`<td name="queen" class="${i} 4 odd white queen">q</td>`);
-                $('#'+i).append(`<td name="king" class="${i} 5 even white king">k</td>`);
-                $('#'+i).append(`<td name="bishop" class="${i} 6 odd white bishop">b</td>`);
-                $('#'+i).append(`<td name="knight" class="${i} 7 even white knight">kn</td>`);
-                $('#'+i).append(`<td name="rook" class="${i} 8 odd white rook">r</td>`);
+                $('#'+i).append(`<td name="rook-white" class="${i} 1 even white rook"></td>`);
+                $('#'+i).append(`<td name="knight-whiteL" class="${i} 2 odd white knight"></td>`);
+                $('#'+i).append(`<td name="bishop-white" class="${i} 3 even white bishop"></td>`);
+                $('#'+i).append(`<td name="queen-white" class="${i} 4 odd white queen"></td>`);
+                $('#'+i).append(`<td name="king-white" class="${i} 5 even white king"></td>`);
+                $('#'+i).append(`<td name="bishop-white" class="${i} 6 odd white bishop"></td>`);
+                $('#'+i).append(`<td name="knight-whiteR" class="${i} 7 even white knight"></td>`);
+                $('#'+i).append(`<td name="rook-white" class="${i} 8 odd white rook"></td>`);
             }
-        };  
-    };
+        }
+    }
     
     //add pictures of pieces to board.
-    pawn = `<img src=/static/images/pawn.png id='pawn'></img>`
-    var rook
-    var knight
-    var bishop
-    var queen
-    var king
-
-    $('.pawn').append(pawn);
-    $('.rook').append(rook);
-    $('.knight').append(knight);
-    $('.bishop').append(bishop);
-    $('.queen').append(queen);
-    $('.king').append(king);
-
+    pawnWhite = `<img src=/static/images/pawn-white.png id='pawnWhite'></img>`;
+    rookWhite = `<img src=/static/images/rook-white.png id='rookWhite'></img>`;
+    knightWhiteR = `<img src=/static/images/knight-white.png id='knightWhiteR'></img>`;
+    knightWhiteL = `<img src=/static/images/knight-whiteL.png id='knightWhiteL'></img>`;
+    bishopWhite = `<img src=/static/images/bishop-white.png id='bishopWhite'></img>`;
+    queenWhite = `<img src=/static/images/queen-white.png id='queenWhite'></img>`;
+    kingWhite = `<img src=/static/images/king-white.png id='kingWhite'></img>`;
+    //black pieces
+    pawnBlack = `<img src=/static/images/pawn-black.png id='pawnBlack'></img>`;
+    rookBlack = `<img src=/static/images/rook-black.png id='rookBlack'></img>`;
+    knightBlackR = `<img src=/static/images/knight-blackR.png id='kinghtBlackR'></img>`;
+    knightBlackL = `<img src=/static/images/knight-blackL.png id='knightBlackL'></img>`;
+    bishopBlack = `<img src=/static/images/bishop-black.png id='bishopBlack'></img>`;
+    queenBlack = `<img src=/static/images/queen-black.png id='queenBlack'></img>`;
+    kingBlack = `<img src=/static/images/king-black.png id='kingBlack'></img>`;
+    //white
+    $("td[name='pawn-white']").append(pawnWhite);
+    $("td[name='rook-white']").append(rookWhite);
+    $("td[name='knight-whiteL']").append(knightWhiteL);
+    $("td[name='knight-whiteR']").append(knightWhiteR);
+    $("td[name='bishop-white']").append(bishopWhite);
+    $("td[name='queen-white']").append(queenWhite);
+    $("td[name='king-white']").append(kingWhite);
+    //black
+    $("td[name='pawn-black']").append(pawnBlack);
+    $('td[name="rook-black"').append(rookBlack);
+    $("td[name='knight-blackL']").append(knightBlackL);
+    $("td[name='knight-blackR']").append(knightBlackR);
+    $("td[name='bishop-black']").append(bishopBlack);
+    $("td[name='queen-black']").append(queenBlack);
+    $("td[name='king-black']").append(kingBlack);
 
     // randomly choose if white or black starts first.
-    var number = .6 //Math.random();
+    var number = 0.6; //Math.random();
     var turn;
-    console.log(number)
-    if(number <= .5){
-        turn = 'black'
+    console.log(number);
+    if(number <= 0.5){
+        turn = 'black';
     }else{
-        turn = 'white'
+        turn = 'white';
     }
 
 
@@ -110,43 +127,53 @@ $( document ).ready(function() {
     function startTurn(turn){
         
         if(turn == "white"){
-            $('.black').removeClass(`activated`)
-            $('.white').addClass(`activated`)
+            $('.black').removeClass(`activated`);
+            $('.white').addClass(`activated`);
         }
         if(turn == "black"){
-            $('.white').removeClass(`activated`)
-            $('.black').addClass(`activated`)
+            $('.white').removeClass(`activated`);
+            $('.black').addClass(`activated`);
         }
     }
     
     //clicks a white piece
-    $('.white').click(function () { 
+    $('#board').on('click', '.white', function () { 
         if(turn == 'white'){
         $('td').removeClass('selected');
         $(this).addClass('selected');
         }
-        
+        console.log(this);
+        //black capture white
+        // if(turn == 'black'){
+        // }
     });
 
     //clicks a black piece
-    $('.black').click(function () { 
+    $('#board').on('click', '.black', function () { 
         if(turn == 'black'){
         $('td').removeClass('selected');
         $(this).addClass('selected');
         }
         
+        //white capture black
+        else if((turn == 'white') && ($('td').hasClass('selected'))){
+            $('td').removeClass('capturePiece');
+            $(this).addClass('capturePiece');
+            capturePiecePawn(this, turn);
+        }
     });
 
     //move a piece //changeturns and //flips board
-    $('.empty').click(function(){
+    $('#board').on('click', '.empty', function(){
         if($('td').hasClass('selected')){
 
             if($('.selected').hasClass('pawn')){
-                movePawn(this, turn)
-                if($(this).hasClass(turn)){
-                    turn = changeTurn(turn)
-                    flipBoard()
-                    return turn
+                movePawn(this, turn);
+                console.log(this)
+                if($(this).hasClass('pawn')){
+                    turn = changeTurn(turn);
+                    flipBoard();
+                    return turn;
                 }
                 
             }
@@ -175,23 +202,45 @@ $( document ).ready(function() {
 
     function movePawn(spot, turn){
         // First move for pawn
-        if($('.pawn').hasClass('first')){
+        if($('.selected').hasClass('first')){
 
             //one spot pawn move
             if(($(spot).parent().next().children().hasClass('selected')) || ($(spot).parent().next().next().children().hasClass('selected') )){
-                piece = $('.selected')
+                piece = $('.selected');
 
-                pieceLocation = $('.selected').parent().index()
-                validSpot = $(spot).parent().index()
+                pieceLocation = $('.selected').parent().index();
+                validSpot = $(spot).parent().index();
                 
-                pieceIndex = $('.selected')[0].cellIndex
-                validSpotIndex = spot.cellIndex
+                pieceIndex = $('.selected')[0].cellIndex;
+                validSpotIndex = spot.cellIndex;
 
-                pieceType = '.pawn'
+                pieceType = 'pawn';
 
                 
                 if((pieceLocation == (validSpot + 1) || pieceLocation  == (validSpot +2)) && pieceIndex == validSpotIndex){
-                    movePiece(piece, spot, turn);
+                    movePiece(piece, pieceType, spot, turn);
+                }
+                
+            }
+
+        }
+        else if($('.selected').hasClass('pawn')){
+
+            //one spot pawn move
+            if(($(spot).parent().next().children().hasClass('selected'))){
+                piece = $('.selected');
+
+                pieceLocation = $('.selected').parent().index();
+                validSpot = $(spot).parent().index();
+                
+                pieceIndex = $('.selected')[0].cellIndex;
+                validSpotIndex = spot.cellIndex;
+
+                pieceType = 'pawn';
+
+                
+                if((pieceLocation == (validSpot + 1)) && pieceIndex == validSpotIndex){
+                    movePiece(piece, pieceType, spot, turn);
                 }
                 
             }
@@ -206,46 +255,84 @@ $( document ).ready(function() {
     ////helper functions
     
 
-    function movePiece(piece, spot, turn){
-        piece.removeClass('white selected activated pawn');
+    function movePiece(piece, pieceType, spot, turn){
+        piece.removeClass('white selected activated pawn first');
         piece.empty();
-        piece.addClass('empty')
+        piece.addClass('empty');
 
-        $(spot).removeClass('empty')
-        $(spot).addClass(`pawn ${turn}`)
-        $(spot).append(pawn);
+        $(spot).removeClass('empty');
+        $(spot).addClass(`${pieceType} ${turn}`);
+        if(turn == 'white'){
+            $(spot).append(pawnWhite);
+        }else{
+            $(spot).append(pawnBlack);
+        }
+        
     }
 
     function changeTurn(turn){
-        console.log(turn)
-        $(`td.${turn}`).removeClass('activated')
+        console.log(turn);
+        $(`td.${turn}`).removeClass('activated');
 
         if(turn == 'white'){
-            turn = 'black'
+            turn = 'black';
         }else{
-            turn = 'white'
+            turn = 'white';
         }
 
-        $(`.${turn}`).addClass('activated')
-        console.log(turn)
+        $(`.${turn}`).addClass('activated');
+        console.log(turn);
         return turn;
     }
 
     function flipBoard(){
 
-        var reversedBoard = []
+        var reversedBoard = [];
 
     
         $('#board tr').each(function(){ 
-            reversedBoard.push(this)
+            reversedBoard.push(this);
         });
     
         reversedBoard = reversedBoard.reverse();
         
         reversedBoard.forEach(function(){
-            $('#board').append(reversedBoard)
-        })
-        console.log($('#board'))
+            $('#board').append(reversedBoard);
+        });
 
-    };
+    }
+
+    function capturePiecePawn(capturePiece, turn){
+        if(($(capturePiece).parent().next().children().hasClass('selected'))){
+            
+            piece = $('.selected');
+            pieceLocation = $('.selected').parent().index();
+            validSpot = $(capturePiece).parent().index();
+                
+            pieceIndex = $('.selected')[0].cellIndex;
+            validSpotIndex = capturePiece.cellIndex;
+
+            pieceType = 'pawn-white';//change hardcode
+
+            console.log(pieceIndex);
+            console.log(validSpotIndex);    
+            if((Math.abs(pieceIndex - validSpotIndex) == 1)){
+                
+                piece.removeClass('white selected activated pawn first');
+                piece.empty();
+                piece.addClass('empty');
+
+                $(capturePiece).removeClass(`pawn ${turn}`);
+                $(capturePiece).empty()
+                $(capturePiece).addClass(`${pieceType} ${turn}`);
+                $(capturePiece).attr('name', pieceType) //change hardcode
+
+                if(turn == 'white'){
+                    $(capturePiece).append(pawnWhite);
+                }else{
+                    $(capturePiece).append(pawnBlack);
+                }
+            }
+        }
+    }
 });
