@@ -138,28 +138,38 @@ $( document ).ready(function() {
     
     //clicks a white piece
     $('#board').on('click', '.white', function () { 
+        $('td').removeClass('attackPiece')
+        $('td').removeClass('capturePiece');
         if(turn == 'white'){
-        $('td').removeClass('selected');
-        $(this).addClass('selected');
+            $('td').removeClass('selected');
+            $(this).addClass('selected');
         }
-        console.log(this);
-        //black capture white
-        // if(turn == 'black'){
-        // }
+        if((turn == 'black') && ($('td').hasClass('selected'))){
+            $('.selected').addClass('attackPiece')
+            $('td').removeClass('selected');
+            $(this).addClass('capturePiece');
+            turn = capturePiecePawn(this, turn);
+            return turn;
+        }
     });
 
     //clicks a black piece
     $('#board').on('click', '.black', function () { 
+        $('td').removeClass('attackPiece')
+        $('td').removeClass('capturePiece');
         if(turn == 'black'){
-        $('td').removeClass('selected');
-        $(this).addClass('selected');
+            $('td').removeClass('selected');
+            $(this).addClass('selected');
         }
         
         //white capture black
-        else if((turn == 'white') && ($('td').hasClass('selected'))){
-            $('td').removeClass('capturePiece');
+        if((turn == 'white') && ($('td').hasClass('selected'))){
+            
+            $('.selected').addClass('attackPiece')
+            $('td').removeClass('selected');
             $(this).addClass('capturePiece');
-            capturePiecePawn(this, turn);
+            turn = capturePiecePawn(this, turn);
+            return turn;
         }
     });
 
@@ -168,14 +178,8 @@ $( document ).ready(function() {
         if($('td').hasClass('selected')){
 
             if($('.selected').hasClass('pawn')){
-                movePawn(this, turn);
-                console.log(this)
-                if($(this).hasClass('pawn')){
-                    turn = changeTurn(turn);
-                    flipBoard();
-                    return turn;
-                }
-                
+                turn = movePawn(this, turn);
+                return turn;
             }
 
             else if($('.selected').hasClass('rook')){
@@ -219,6 +223,9 @@ $( document ).ready(function() {
                 
                 if((pieceLocation == (validSpot + 1) || pieceLocation  == (validSpot +2)) && pieceIndex == validSpotIndex){
                     movePiece(piece, pieceType, spot, turn);
+                    turn = changeTurn(turn);
+                    flipBoard(turn);
+                    return turn;
                 }
                 
             }
@@ -236,16 +243,22 @@ $( document ).ready(function() {
                 pieceIndex = $('.selected')[0].cellIndex;
                 validSpotIndex = spot.cellIndex;
 
-                pieceType = 'pawn';
+                pieceType = 'pawn'; //hardcode?
 
                 
                 if((pieceLocation == (validSpot + 1)) && pieceIndex == validSpotIndex){
                     movePiece(piece, pieceType, spot, turn);
+                    turn = changeTurn(turn);
+                    flipBoard(turn);
+                    return turn;
                 }
                 
             }
 
         }
+
+        $('td').removeClass('selected');
+        return turn;
     }
 
 
@@ -256,7 +269,7 @@ $( document ).ready(function() {
     
 
     function movePiece(piece, pieceType, spot, turn){
-        piece.removeClass('white selected activated pawn first');
+        piece.removeClass(`${turn} selected activated pawn first`);
         piece.empty();
         piece.addClass('empty');
 
@@ -271,7 +284,7 @@ $( document ).ready(function() {
     }
 
     function changeTurn(turn){
-        console.log(turn);
+        
         $(`td.${turn}`).removeClass('activated');
 
         if(turn == 'white'){
@@ -285,7 +298,7 @@ $( document ).ready(function() {
         return turn;
     }
 
-    function flipBoard(){
+    function flipBoard(turn){
 
         var reversedBoard = [];
 
@@ -299,40 +312,54 @@ $( document ).ready(function() {
         reversedBoard.forEach(function(){
             $('#board').append(reversedBoard);
         });
-
+        console.log(turn)
+        return turn;
     }
 
     function capturePiecePawn(capturePiece, turn){
-        if(($(capturePiece).parent().next().children().hasClass('selected'))){
+
+
+        if(($(capturePiece).parent().next().children().hasClass('attackPiece'))){
             
-            piece = $('.selected');
-            pieceLocation = $('.selected').parent().index();
+            piece = $('.attackPiece');
+            pieceLocation = $('.attackPiece').parent().index();
             validSpot = $(capturePiece).parent().index();
                 
-            pieceIndex = $('.selected')[0].cellIndex;
+            pieceIndex = $('.attackPiece')[0].cellIndex;
             validSpotIndex = capturePiece.cellIndex;
 
-            pieceType = 'pawn-white';//change hardcode
-
+            pieceType = $(capturePiece).attr("name");//change hardcode
+            console.log(capturePiece)
             console.log(pieceIndex);
             console.log(validSpotIndex);    
             if((Math.abs(pieceIndex - validSpotIndex) == 1)){
                 
-                piece.removeClass('white selected activated pawn first');
+                piece.removeClass(`${turn} attackPiece pawn first`);
                 piece.empty();
                 piece.addClass('empty');
+                pieceOnBoard = 'pawn' //change harcode
 
-                $(capturePiece).removeClass(`pawn ${turn}`);
+                $(capturePiece).removeClass('pawn capturePiece'); //change to all pieces for capturee .find()?
                 $(capturePiece).empty()
-                $(capturePiece).addClass(`${pieceType} ${turn}`);
+                $(capturePiece).addClass(`${pieceOnBoard} ${turn}`);
                 $(capturePiece).attr('name', pieceType) //change hardcode
 
                 if(turn == 'white'){
-                    $(capturePiece).append(pawnWhite);
-                }else{
+                    $(capturePiece).removeClass('black')
+                    $(capturePiece).append(pawnWhite); //change hardcode
+                    turn = changeTurn(turn);
+                    flipBoard(turn);
+                    return turn;
+                }else if(turn == 'black'){
+                    $(capturePiece).removeClass('white');
                     $(capturePiece).append(pawnBlack);
+                    turn = changeTurn(turn);
+                    flipBoard(turn);
+                    return turn;
                 }
             }
         }
+        $('td').removeClass('capturePiece attackPiece');
+        return turn;
     }
 });
