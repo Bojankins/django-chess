@@ -144,13 +144,7 @@ $( document ).ready(function() {
             $('td').removeClass('selected');
             $(this).addClass('selected');
         }
-        if((turn == 'black') && ($('td').hasClass('selected'))){
-            $('.selected').addClass('attackPiece')
-            $('td').removeClass('selected');
-            $(this).addClass('capturePiece');
-            turn = capturePiecePawn(this, turn);
-            return turn;
-        }
+        
     });
 
     //clicks a black piece
@@ -162,26 +156,30 @@ $( document ).ready(function() {
             $(this).addClass('selected');
         }
         
-        //white capture black
-        if((turn == 'white') && ($('td').hasClass('selected'))){
-            
-            $('.selected').addClass('attackPiece')
-            $('td').removeClass('selected');
-            $(this).addClass('capturePiece');
-            turn = capturePiecePawn(this, turn);
-            return turn;
-        }
     });
 
     //move a piece //changeturns and //flips board
-    $('#board').on('click', '.empty', function(){
+    $('#board').on('click', 'td', function(){
         if($('td').hasClass('selected')){
 
-            if($('.selected').hasClass('pawn')){
-                turn = movePawn(this, turn);
+            ///pawn
+            if($('.selected').hasClass('pawn')){ 
+                
+                var enemyColor = determineEnemyColor(turn, enemyColor)
+
+                if($(this).hasClass('empty')){
+                    turn = movePawn(this, turn);
+                }
+                else if($(this).hasClass(enemyColor)){
+                    $('td').removeClass('capturePiece')
+                    $('td').removeClass('attackpiece')
+                    $('.selected').addClass('attackPiece')
+                    $(this).addClass('capturePiece');
+                    turn = capturePiecePawn(this, turn)
+                }
                 return turn;
             }
-
+            ///rook
             else if($('.selected').hasClass('rook')){
                 turn = moveRook(this, turn );
                 return turn;
@@ -192,8 +190,18 @@ $( document ).ready(function() {
             }
 
             else if($('.selected').hasClass('bishop')){
-                turn = moveBishop(this, turn);
-                return turn;
+                
+                console.log(turn)
+                var enemyColor = determineEnemyColor(turn, enemyColor)
+                if($(this).hasClass(enemyColor)){
+
+                    turn = moveBishop(this, turn, enemyColor);
+                    return turn;
+                }
+                else if($(this).hasClass('empty')){
+                    turn = moveBishop(this, turn);
+                    return turn;
+                }
             }
 
             else if($('.selected').hasClass('queen')){
@@ -206,6 +214,8 @@ $( document ).ready(function() {
         }
     });
 
+    ////helper functions
+
     function movePawn(spot, turn){
         // First move for pawn
         if($('.selected').hasClass('first')){
@@ -214,7 +224,7 @@ $( document ).ready(function() {
             if(($(spot).parent().next().children().hasClass('selected')) || ($(spot).parent().next().next().children().hasClass('selected') )){
                 piece = $('.selected');
 
-                pieceLocation = $('.selected').parent().index();
+                pieceRow = $('.selected').parent().index();
                 validSpot = $(spot).parent().index();
                 
                 pieceIndex = $('.selected')[0].cellIndex;
@@ -223,7 +233,7 @@ $( document ).ready(function() {
                 pieceType = 'pawn';
 
                 
-                if((pieceLocation == (validSpot + 1) || pieceLocation  == (validSpot +2)) && pieceIndex == validSpotIndex){
+                if((pieceRow == (validSpot + 1) || pieceRow  == (validSpot +2)) && pieceIndex == validSpotIndex){
                     movePiece(piece, pieceType, spot, turn);
                     turn = changeTurn(turn);
                     flipBoard(turn);
@@ -239,7 +249,7 @@ $( document ).ready(function() {
             if(($(spot).parent().next().children().hasClass('selected'))){
                 piece = $('.selected');
 
-                pieceLocation = $('.selected').parent().index();
+                pieceRow = $('.selected').parent().index();
                 validSpot = $(spot).parent().index();
                 
                 pieceIndex = $('.selected')[0].cellIndex;
@@ -248,7 +258,7 @@ $( document ).ready(function() {
                 pieceType = 'pawn'; //hardcode?
 
                 
-                if((pieceLocation == (validSpot + 1)) && pieceIndex == validSpotIndex){
+                if((pieceRow == (validSpot + 1)) && pieceIndex == validSpotIndex){
                     movePiece(piece, pieceType, spot, turn);
                     turn = changeTurn(turn);
                     flipBoard(turn);
@@ -261,14 +271,7 @@ $( document ).ready(function() {
 
         $('td').removeClass('selected');
         return turn;
-    }
-
-
-
-
-
-    ////helper functions
-    
+    }    
 
     function movePiece(piece, pieceType, spot, turn){
         piece.removeClass(`${turn} selected activated pawn first`);
@@ -285,12 +288,13 @@ $( document ).ready(function() {
         
     }
 
-    function moveBishop(spot, turn){
+    function moveBishop(spot, turn, enemyColor){
         //move bishop
         
         piece = $('.selected');
 
-        pieceLocation = $('.selected').parent().index();
+
+        pieceRow = $('.selected').parent().index();
         validSpot = $(spot).parent().index();
         validSpotIndex = spot.cellIndex;
         pieceIndex = $('.selected')[0].cellIndex;
@@ -300,9 +304,6 @@ $( document ).ready(function() {
         spotRow = validSpot.toString()
         spotCol = validSpotIndex.toString()
 
-
-        console.log('------')
-        console.log(turn)
         piecesBlockingMove = 0;
 
         
@@ -311,77 +312,38 @@ $( document ).ready(function() {
 
         for(i = 1; i < (Math.abs(validSpotIndex - pieceIndex) + 1); i++){
 
-            if((pieceIndex > validSpotIndex) && (pieceLocation > validSpot)){
-                spotRow = ((pieceLocation) - i).toString();
+            if((pieceIndex > validSpotIndex) && (pieceRow > validSpot)){
+                spotRow = ((pieceRow) - i).toString();
                 spotCol = ((pieceIndex) - i);
-            }else if((pieceIndex > validSpotIndex) && (pieceLocation < validSpot)){
-                spotRow = ((pieceLocation) + i).toString();
+            }else if((pieceIndex > validSpotIndex) && (pieceRow < validSpot)){
+                spotRow = ((pieceRow) + i).toString();
                 spotCol = ((pieceIndex) - i);
-            }else if((pieceIndex < validSpotIndex) && (pieceLocation > validSpot)){
-                spotRow = ((pieceLocation) - i).toString();
+            }else if((pieceIndex < validSpotIndex) && (pieceRow > validSpot)){
+                spotRow = ((pieceRow) - i).toString();
                 spotCol = ((pieceIndex) + i);
-            }else if((pieceIndex < validSpotIndex) && (pieceLocation < validSpot)){
-                spotRow = ((pieceLocation) + i).toString();
+            }else if((pieceIndex < validSpotIndex) && (pieceRow < validSpot)){
+                spotRow = ((pieceRow) + i).toString();
                 spotCol = ((pieceIndex) + i);
             }
             
-            console.log(`${spotRow} ${spotCol}`);
-
-                console.log(validSpot)
-                console.log(validSpotIndex)
-                console.log(pieceLocation)
-                console.log(pieceIndex)
-                console.log($('td').eq(spotRow).children().eq(spotCol))
 
 
-            if($('tr').eq(spotRow).children().eq(spotCol).hasClass('empty')){
-
-                console.log($('td').eq(spotRow).children().eq(spotCol))
-                console.log('empty')
-
-                
-
+            if($('tr').eq(spotRow).children().eq(spotCol).hasClass(enemyColor) && piecesBlockingMove == 0){ 
+                turn = movePieceBishop(spot, turn, enemyColor)    
+            }else if($('tr').eq(spotRow).children().eq(spotCol).hasClass('empty')){
+                piecesBlockingMove += 0
             }else{
                 piecesBlockingMove++
-                console.log('not empty')
-                console.log(piecesBlockingMove)
-            }
-                  
+            }         
+        }
+
+        if($('td').hasClass('selected')){
+            turn = movePieceBishop(spot, turn, enemyColor);
         }
         
-        if(Math.abs((validSpotIndex - pieceIndex)) == Math.abs((validSpot - pieceLocation)) && piecesBlockingMove == 0){
-                
-            if(turn == 'white'){
-                $(piece).removeClass('white bishop');
-                $(piece).empty();
-                $(piece).addClass('empty');
-                $(spot).removeClass('empty');
-                $(spot).append(bishopWhite); //change hardcode
-                $(spot).addClass('white bishop');
-                turn = changeTurn(turn);
-                flipBoard(turn);
-                $('td').removeClass('selected');
-                return turn;
-            }else if(turn == 'black'){
-                $(piece).removeClass('black bishop');
-                $(piece).empty();
-                $(piece).addClass('empty');
-                $(spot).append(bishopBlack);
-                $(spot).removeClass('empty');
-                $(spot).addClass('black bishop');
-                turn = changeTurn(turn);
-                flipBoard(turn);
-                $('td').removeClass('selected');
-                return turn;
-            }
-            
-        }else{
-            console.log('cant move here')
-            $('td').removeClass('selected');
-            return turn;
-        }
-            
-
+        $('td').removeClass('selected')
+        return turn;
+               
     }
 
     function changeTurn(turn){
@@ -395,7 +357,6 @@ $( document ).ready(function() {
         }
 
         $(`.${turn}`).addClass('activated');
-        console.log(turn);
         return turn;
     }
 
@@ -416,22 +377,29 @@ $( document ).ready(function() {
         return turn;
     }
 
+    function determineEnemyColor(turn ,enemyColor){
+        if(turn == 'white'){
+            enemyColor = 'black'
+        }else{
+            enemyColor = 'white'
+        }
+        return enemyColor;
+    }
+
     function capturePiecePawn(capturePiece, turn){
 
 
         if(($(capturePiece).parent().next().children().hasClass('attackPiece'))){
             
             piece = $('.attackPiece');
-            pieceLocation = $('.attackPiece').parent().index();
+            pieceRow = $('.attackPiece').parent().index();
             validSpot = $(capturePiece).parent().index();
                 
             pieceIndex = $('.attackPiece')[0].cellIndex;
             validSpotIndex = capturePiece.cellIndex;
 
             pieceType = $(capturePiece).attr("name");//change hardcode
-            console.log(capturePiece)
-            console.log(pieceIndex);
-            console.log(validSpotIndex);    
+              
             if((Math.abs(pieceIndex - validSpotIndex) == 1)){
                 
                 piece.removeClass(`${turn} attackPiece pawn first`);
@@ -462,4 +430,51 @@ $( document ).ready(function() {
         $('td').removeClass('capturePiece attackPiece');
         return turn;
     }
+
+    function movePieceBishop(spot, turn, enemyColor){
+        console.log('test')
+        if(Math.abs(validSpotIndex - pieceIndex) == Math.abs(validSpot - pieceRow) && (piecesBlockingMove == 0)){
+                
+            if(turn == 'white'){
+
+                if($(spot).hasClass(enemyColor)){
+                    $(spot).removeClass(`pawn bishop knight rook queen ${enemyColor}`); 
+                    $(spot).empty();
+                }
+
+                    $(piece).removeClass('white bishop');
+                    $(piece).empty();
+                    $(piece).addClass('empty');
+                    $(spot).removeClass('empty');
+                    $(spot).append(bishopWhite); //change hardcode
+                    $(spot).addClass('white bishop');
+                    turn = changeTurn(turn);
+                    flipBoard(turn);
+                    $('td').removeClass('selected');
+                    return turn;
+                
+
+            }else if(turn == 'black'){
+
+                if($(spot).hasClass(enemyColor)){
+                    $(spot).removeClass(`pawn bishop knight rook queen ${enemyColor}`); 
+                    $(spot).empty()
+                }
+
+                $(piece).removeClass('black bishop');
+                $(piece).empty();
+                $(piece).addClass('empty');
+                $(spot).append(bishopBlack);
+                $(spot).removeClass('empty');
+                $(spot).addClass('black bishop');
+                turn = changeTurn(turn);
+                flipBoard(turn);
+                $('td').removeClass('selected');
+                return turn;
+            }
+            
+        }
+    }
+
+    
 });
