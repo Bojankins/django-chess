@@ -520,7 +520,7 @@ $( document ).ready(function() {
               
             if((Math.abs(pieceIndex - validSpotIndex) == 1)){
                 
-                piece.removeClass(`${turn} attackPiece pawn first`);
+                piece.removeClass(`${turn} attackPiece pawn first selected`);
                 piece.empty();
                 piece.addClass('empty');
                 pieceOnBoard = 'pawn' //change harcode
