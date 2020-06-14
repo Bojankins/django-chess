@@ -300,8 +300,11 @@ $( document ).ready(function() {
         // console.log(spotCol);
         // console.log(spotRow);
         
-        //check = kingInCheck() replace for below.
+        kingPiece = $(`td.king.${turn}`)
         check = false; 
+        //check = kingInCheck(kingPiece, enemyColor, piecesBlockingMove, check) //replace for below.
+        console.log(check)
+
         if(check == false){
             //checking for pawn moves
             if(piece == `pawn${turn}`){
@@ -338,59 +341,103 @@ $( document ).ready(function() {
                move = checkKingMove(pieceRow, pieceIndex, validSpot, validSpotIndex, move)
             }
 
+        if(check == false){
+            if(($('td').hasClass('selected')) && (move == true)){
+                turn = movePiece(spot, turn, enemyColor, piece, pieceType, pieceLocation, piecesBlockingMove, check);
 
-        if(($('td').hasClass('selected')) && (move == true)){
-            turn = movePiece(spot, turn, enemyColor, piece, pieceType, pieceLocation);
-
+            }
         }
-        
+        console.log(check)
         $('td').removeClass('selected')
         return turn;
     }
 
-    function movePiece(spot, turn, enemyColor, piece, pieceType, pieceLocation){
+    function movePiece(spot, turn, enemyColor, piece, pieceType, pieceLocation, piecesBlockingMove, check){
         
+        piecesBlockingMove = 0;
 
-        if($(spot).hasClass(enemyColor)){
-            $(spot).removeClass(`pawn bishop knight rook queen first ${enemyColor}`); 
-            $(spot).empty();
-        }
+        console.log(check)
 
-        // required because knight has two images
-        if($('.selected').attr('name') == `knight-${turn}${pieceLocation}`){
-            pieceName = `knight-${turn}${pieceLocation}`
-            console.log(pieceName)
-        }
+                // $(spot).addClass('empty');
+                // $(spot).empty();
+                // //$(spot).append(`<img src=/static/images/${pieceName}.png id='${piece}'></img>`); //change hardcode
+                // $(spot).removeClass(`${pieceType} ${turn}`);
+                // $(spot).removeAttr('name' , pieceName);
 
-        //if pawn achieves rank 7
-        if($(spot).parent().is('#7') || $(spot).parent().is('#0')){ 
+                // //
+                // $('.selected').append(`<img src=/static/images/${pieceName}.png id='${piece}'></img>`);
+                // $('.selected').addClass(`${pieceType} ${turn}`);
+                // $('.selected').removeClass('empty');
 
-            if($('.selected').hasClass('pawn')){
-                console.log('rank 7')
-                pieceName = `queen-${turn}`;//change hardcode quuen to choose piece feature
-                piece = `queen${turn}`
-                pieceType = 'queen'
-                pieceToAppend = $('.selected').find(piece)
+        // check = kingInCheck(kingPiece, enemyColor, piecesBlockingMove, check);
+        //     console.log(check);
+        //     if(check == true){
+        //         turn = changeTurn(turn);
+        //         flipBoard(turn);
+        //     }
+        
+        if(check == false){
+            if($(spot).hasClass(enemyColor)){
+                //$(spot).removeClass(`pawn bishop knight rook queen first ${enemyColor}`); 
+                //$(spot).empty();
             }
-        }
 
-            //
-            console.log($('.selected').find(piece))
+            // required because knight has two images
+            if($('.selected').attr('name') == `knight-${turn}${pieceLocation}`){
+                pieceName = `knight-${turn}${pieceLocation}`
+                console.log(pieceName)
+            }
+
+            //if pawn achieves rank 7
+            if($(spot).parent().is('#7') || $(spot).parent().is('#0')){ 
+
+                if($('.selected').hasClass('pawn')){
+                    console.log('rank 7')
+                    pieceName = `queen-${turn}`;//change hardcode quuen to choose piece feature
+                    piece = `queen${turn}`
+                    pieceType = 'queen'
+                    pieceToAppend = $('.selected').find(piece)
+                }
+            }
+
+            
             $(spot).removeClass('empty');
-            $(spot).append(`<img src=/static/images/${pieceName}.png id='${piece}'></img>`); //change hardcode
             $(spot).addClass(`${pieceType} ${turn}`);
-            $(spot).attr('name' , pieceName);
-
 
             //
             $('.selected').empty();
-            $('.selected').removeClass(`${pieceType} ${turn}`);
+            $('.selected').removeClass(`${pieceType} ${turn} first`);
             $('.selected').addClass('empty');
 
-            turn = changeTurn(turn);
-            flipBoard(turn);
-            $('td').removeClass('selected');
-                
+            check = kingInCheck(kingPiece, enemyColor, piecesBlockingMove, check);
+            console.log(check);
+            if(check == false){
+                $(spot).removeClass(`pawn bishop knight rook queen first ${enemyColor}`); 
+                $(spot).empty();
+                $(spot).append(`<img src=/static/images/${pieceName}.png id='${piece}'></img>`); //change hardcode
+                $(spot).attr('name' , pieceName);
+                $(spot).addClass(pieceType)
+
+                turn = changeTurn(turn);
+                flipBoard(turn);
+             }else{
+                $(spot).removeClass(`${turn}`); 
+                $('.selected').append(`<img src=/static/images/${pieceName}.png id='${piece}'></img>`);
+                $('.selected').addClass(`${pieceType} ${turn}`);
+                $('.selected').removeClass('empty');
+             }
+        }
+        enemyColor = determineEnemyColor(turn, enemyColor)
+        kingPiece = $(`td.king.${turn}`)
+        check = kingInCheck(kingPiece, enemyColor, piecesBlockingMove, check);
+        $(kingPiece).removeClass('checked');
+        if(check == true){
+            $(kingPiece).addClass('checked');
+        }
+
+        $('td').removeClass('selected');
+        console.log(kingPiece)
+        console.log(`${turn} - ${check}`)
         return turn;
     }
 
@@ -432,6 +479,53 @@ $( document ).ready(function() {
             enemyColor = 'white'
         }
         return enemyColor;
+    }
+
+    function kingInCheck(kingPiece, enemyColor, piecesBlockingMove, check){
+
+        kingRow = $(kingPiece).parent().index();
+        kingIndex = $(kingPiece)[0].cellIndex;
+
+        //kingRow.toString()
+        console.log(kingPiece)
+        console.log(kingRow)
+        console.log(kingIndex)
+        
+
+        for(i = 1; kingRow >= i; i++ ){
+            
+            if($('tr').eq(kingRow - i).children().eq(kingIndex).hasClass('empty')){
+                piecesBlockingMove += 0
+            }
+            else if(($('tr').eq(kingRow - i).children().eq(kingIndex).hasClass(enemyColor)) && (piecesBlockingMove == 0)){
+                console.log('----------------------')
+                checkPiece = $('tr').eq(kingRow - i).children().eq(kingIndex)
+                if($(checkPiece).hasClass('queen')){
+                    console.log('queen attacking')
+                    check = true
+                }else if($(checkPiece).hasClass('rook')){
+                    console.log('queen attacking')
+                    check = true
+                }else{
+                    piecesBlockingMove++
+                }
+            }else{
+                piecesBlockingMove++
+            }
+            console.log($('tr').eq(kingRow - i).children().eq(kingIndex).hasClass('empty') + ` - ${i}`)
+            console.log($('tr').eq(kingRow - i).children().eq(kingIndex).hasClass(enemyColor))
+            console.log(piecesBlockingMove)
+        }
+
+        // spotRow = validSpot.toString()
+        // spotCol = validSpotIndex.toString()
+        
+        // if(turn == 'white'){
+
+        // }else{
+
+        // }
+        return check;
     }
 
     //move checks for pieces

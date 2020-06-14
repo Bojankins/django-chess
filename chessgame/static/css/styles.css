@@ -22,3 +22,7 @@ img {
 .selected {
     outline: 4px solid gold;
 }
+
+.checked {
+    outline: 4px solid red;
+}
