@@ -484,10 +484,9 @@ $( document ).ready(function() {
         //kingRow.toString()
         
         piecesBlockingMove = 0
-        //king to forward end of board
+        //king to forward end of board for rook moves
         for(i = 1; kingRow >= i; i++ ){
             
-            console.log($('tr').eq(kingRow - i).children().eq(kingIndex))
 
             if($('tr').eq(kingRow - i).children().eq(kingIndex).hasClass(turn)){
                 piecesBlockingMove++
@@ -507,6 +506,28 @@ $( document ).ready(function() {
             
         
         }
+        //king to back of board for rook moves
+        for(i = 7; kingRow <= i; i-- ){
+            
+
+            if($('tr').eq(kingRow + i).children().eq(kingIndex).hasClass(turn)){
+                piecesBlockingMove++
+            }
+            if(($('tr').eq(kingRow + i).children().eq(kingIndex).hasClass(enemyColor)) && (piecesBlockingMove == 0)){
+                checkPiece = $('tr').eq(kingRow + i).children().eq(kingIndex)
+                if($(checkPiece).hasClass('queen')){
+                    check = true
+                }else if($(checkPiece).hasClass('rook')){
+                    check = true
+                }
+            }
+            if($('tr').eq(kingRow + i).children().eq(kingIndex).hasClass('empty')){
+                piecesBlockingMove += 0
+            }
+            
+            
+        
+        }
         console.log(piecesBlockingMove)
         return check;
     }
@@ -515,12 +536,12 @@ $( document ).ready(function() {
     function checkPawnMove(spot, pieceRow, pieceIndex, validSpot, validSpotIndex, enemyColor, move){
         if((pieceIndex == validSpotIndex) && (pieceRow - validSpot) == 1){
             move = true;
-        }else if( ((pieceIndex == validSpotIndex) && ( 0 < (pieceRow - validSpot) < 3)) && ($('.selected').hasClass('first'))){
+        }else if( (pieceIndex == validSpotIndex) && (( (pieceRow - validSpot) > 0 && (pieceRow - validSpot) < 3)) && ($('.selected').hasClass('first')) && ($(spot).hasClass('empty'))){
             move = true;
         }else if(((Math.abs(pieceIndex - validSpotIndex) == 1) && ((pieceRow - validSpot) == 1)) && $(spot).hasClass(enemyColor)){
             move = true;
         }
-
+        console.log()
         return move;
     }
 
@@ -641,13 +662,6 @@ $( document ).ready(function() {
 
     function reverseMove(spot, turn, enemyColor, piece, pieceType, pieceLocation, piecesBlockingMove, check){
         
-        piecesBlockingMove = 0;
-
-
-        // enemyPiece = spotPiece(spot);
-        // console.log(enemyPiece)
-        
-        
 
         // required because knight has two images
         if($('.selected').attr('name') == `knight-${turn}${pieceLocation}`){
@@ -659,17 +673,12 @@ $( document ).ready(function() {
 
             if($('.selected').hasClass('pawn')){
                 console.log('rank 7')
-                pieceName = `queen-${turn}`;//change hardcode quuen to choose piece feature
+                pieceName = `queen-${turn}`;//change hardcode quuen to choose piece feature todo
                 piece = `queen${turn}`
                 pieceType = 'queen'
                 pieceToAppend = $('.selected').find(piece)
             }
         }
-
-                
-
-        // dont think i need this
-        //$('.selected').empty();
 
         //need to account for first move pawn being replaced with first class
         $('.selected').addClass(`${pieceType} ${turn}`);
@@ -686,19 +695,6 @@ $( document ).ready(function() {
         $(spot).removeClass(`${pieceType} ${turn}`);
         $(spot).addClass('empty');
         
-        
-        
-    
-        // enemyColor = determineEnemyColor(turn, enemyColor)
-        // kingPiece = $(`td.king.${turn}`)
-
-        // $(spot).hasClass(`${turn}`)
-
-        // check = kingInCheck(kingPiece, enemyColor, piecesBlockingMove, check, turn);
-        // $(kingPiece).removeClass('checked');
-        // if(check == true){
-        //     $(kingPiece).addClass('checked');
-        // }
 
         $('td').removeClass('selected');
         console.log(kingPiece)
@@ -706,126 +702,10 @@ $( document ).ready(function() {
         return turn;
     }
   
-    function movePawn(spot, turn){
-        // First move for pawn
-        if($('.selected').hasClass('first')){
+    
 
-            //one spot pawn move
-            if(($(spot).parent().next().children().hasClass('selected')) || ($(spot).parent().next().next().children().hasClass('selected') )){
-                piece = $('.selected');
+    
 
-                pieceRow = $('.selected').parent().index();
-                validSpot = $(spot).parent().index();
-                
-                pieceIndex = $('.selected')[0].cellIndex;
-                validSpotIndex = spot.cellIndex;
-
-                pieceType = 'pawn';
-
-                
-                if((pieceRow == (validSpot + 1) || pieceRow  == (validSpot +2)) && pieceIndex == validSpotIndex){
-                    movePiecePawn(piece, pieceType, spot, turn);
-                    turn = changeTurn(turn);
-                    flipBoard(turn);
-                    return turn;
-                }
-                
-            }
-
-        }
-        else if($('.selected').hasClass('pawn')){
-
-            //one spot pawn move
-            if(($(spot).parent().next().children().hasClass('selected'))){
-                piece = $('.selected');
-
-                pieceRow = $('.selected').parent().index();
-                validSpot = $(spot).parent().index();
-                
-                pieceIndex = $('.selected')[0].cellIndex;
-                validSpotIndex = spot.cellIndex;
-
-                pieceType = 'pawn'; //hardcode?
-
-                
-                if((pieceRow == (validSpot + 1)) && pieceIndex == validSpotIndex){
-                    movePiecePawn(piece, pieceType, spot, turn);
-                    turn = changeTurn(turn);
-                    flipBoard(turn);
-                    return turn;
-                }
-                
-            }
-
-        }
-
-        $('td').removeClass('selected');
-        return turn;
-    }
-
-    function capturePiecePawn(capturePiece, turn){
-
-
-        if(($(capturePiece).parent().next().children().hasClass('attackPiece'))){
-            
-            piece = $('.attackPiece');
-            pieceRow = $('.attackPiece').parent().index();
-            validSpot = $(capturePiece).parent().index();
-                
-            pieceIndex = $('.attackPiece')[0].cellIndex;
-            validSpotIndex = capturePiece.cellIndex;
-              
-            if((Math.abs(pieceIndex - validSpotIndex) == 1)){
-
-                if($(capturePiece).hasClass('7')){ 
-                    pieceName = `queen-${turn}`;//change hardcode quuen to choose piece feature
-                    pieceOnBoard = `#queen${turn}`
-                }else{
-                    pieceName = `pawn-${turn}`;
-                    pieceOnBoard = `#pawn${turn}`
-                }
-                $(capturePiece).removeClass(`${turn} pawn bishop rook knight queen king capturePiece`); //change to all pieces for capturee .find()?
-                $(capturePiece).empty()
-                $(capturePiece).addClass(`${pieceOnBoard} ${turn}`);
-                $(capturePiece).attr('name', pieceName) 
-                $(capturePiece).append($(pieceOnBoard)); 
-
-                piece.removeClass(`${turn} attackPiece pawn first selected`);
-                piece.empty();
-                piece.addClass('empty');
-
-                turn = changeTurn(turn);
-                flipBoard(turn);
-                
-            }
-        }
-        $('td').removeClass('capturePiece attackPiece');
-        return turn;
-    }
-
-    function movePiecePawn(piece, pieceType, spot, turn){
-
-        //pawn reaches rank 7
-        if($(spot).hasClass('7')){
-            pieceName = `queen-${turn}`;//change hardcode quuen to choose piece feature
-            pieceOnBoard = `#queen${turn}`  
-            pieceType = 'queen' 
-            $(spot).addClass(`queen ${turn}`);
-        }else{
-            pieceName = `pawn-${turn}`;
-            pieceOnBoard = `#pawn${turn}`
-            pieceType = 'pawn'
-        }
-
-        $(spot).attr('name', pieceName) 
-        $(spot).removeClass('empty');
-        $(spot).addClass(`${pieceType} ${turn}`);
-        $(spot).append($(pieceOnBoard));
-
-
-        $('.selected').removeClass(`${turn} selected activated pawn first`);
-        $('.selected').empty();
-        $('.selected').addClass('empty');
-    }
+   
     
 });
