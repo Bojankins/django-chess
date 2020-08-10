@@ -330,7 +330,7 @@ $( document ).ready(function() {
         }
 
         //checking for king moves
-            if(piece == `#king${turn}`){
+            if(piece == `king${turn}`){
                move = checkKingMove(pieceRow, pieceIndex, validSpot, validSpotIndex, move)
             }
 
@@ -341,6 +341,7 @@ $( document ).ready(function() {
         }
         //}
         $('td').removeClass('selected')
+        $(spot).removeClass('checked')
         return turn;
     }
 
@@ -376,7 +377,7 @@ $( document ).ready(function() {
 
         //
         $('.selected').empty();
-        $('.selected').removeClass(`${pieceType} ${turn} first`);
+        $('.selected').removeClass(`${pieceType} ${turn} first checked`);
         $('.selected').addClass('empty');
 
         
@@ -392,10 +393,7 @@ $( document ).ready(function() {
         check = kingInCheck(kingPiece, enemyColor, piecesBlockingMove, check, turn);
 
         if(check == true){
-            console.log('test here')
-            console.log(check)
-            console.log(turn + ' - turn')
-            console.log(enemyColor + ' - enemycolor')
+            
             reverseMove(spot, turn, enemyColor, piece, pieceType, pieceLocation, piecesBlockingMove, check)
             $(kingPiece).addClass('checked');
         }
@@ -485,12 +483,10 @@ $( document ).ready(function() {
         
         piecesBlockingMove = 0
         //king to forward end of board for rook moves
-        for(i = 1; kingRow >= i; i++ ){
+        for(i = 1; kingRow > (i - 1) ; i++ ){
             
 
-            if($('tr').eq(kingRow - i).children().eq(kingIndex).hasClass(turn)){
-                piecesBlockingMove++
-            }
+
             if(($('tr').eq(kingRow - i).children().eq(kingIndex).hasClass(enemyColor)) && (piecesBlockingMove == 0)){
                 checkPiece = $('tr').eq(kingRow - i).children().eq(kingIndex)
                 if($(checkPiece).hasClass('queen')){
@@ -499,36 +495,102 @@ $( document ).ready(function() {
                     check = true
                 }
             }
+            if($('tr').eq(kingRow - i).children().eq(kingIndex).hasClass(turn) || ($('tr').eq(kingRow - i).children().eq(kingIndex).hasClass(enemyColor))) {
+                piecesBlockingMove++
+            }
             if($('tr').eq(kingRow - i).children().eq(kingIndex).hasClass('empty')){
                 piecesBlockingMove += 0
             }
-            
-            
-        
-        }
-        //king to back of board for rook moves
-        for(i = 7; kingRow <= i; i-- ){
-            
 
-            if($('tr').eq(kingRow + i).children().eq(kingIndex).hasClass(turn)){
-                piecesBlockingMove++
-            }
-            if(($('tr').eq(kingRow + i).children().eq(kingIndex).hasClass(enemyColor)) && (piecesBlockingMove == 0)){
-                checkPiece = $('tr').eq(kingRow + i).children().eq(kingIndex)
-                if($(checkPiece).hasClass('queen')){
-                    check = true
-                }else if($(checkPiece).hasClass('rook')){
-                    check = true
-                }
-            }
-            if($('tr').eq(kingRow + i).children().eq(kingIndex).hasClass('empty')){
-                piecesBlockingMove += 0
-            }
-            
-            
-        
         }
-        console.log(piecesBlockingMove)
+           
+        //king to back of board for rook moves
+        if(check == false){
+            piecesBlockingMove = 0;
+            i = kingRow
+
+            while(i < 7 ){
+                
+
+                if(($('tr').eq(i + 1).children().eq(kingIndex).hasClass(enemyColor)) && (piecesBlockingMove == 0 )){
+                    checkPiece = $('tr').eq(i + 1).children().eq(kingIndex)
+                    if($(checkPiece).hasClass('queen')){
+                        check = true
+                    }else if($(checkPiece).hasClass('rook')){
+                        check = true
+                    }
+                }
+                if($('tr').eq(i + 1).children().eq(kingIndex).hasClass(turn) || ($('tr').eq(i + 1).children().eq(kingIndex).hasClass(enemyColor))){
+                    piecesBlockingMove++
+                }
+                if($('tr').eq(i + 1).children().eq(kingIndex).hasClass('empty')){
+                    piecesBlockingMove += 0
+                }
+
+                i++
+                
+            }
+        }
+        
+        //king to right side of board for rook moves
+        if(check == false){
+
+            piecesBlockingMove = 0;
+            i = kingIndex
+
+            while(i < 7 ){
+                
+
+                if(($('tr').eq(kingRow).children().eq(i + 1).hasClass(enemyColor)) && (piecesBlockingMove == 0 )){
+                    checkPiece = $('tr').eq(kingRow).children().eq(i + 1)
+                    if($(checkPiece).hasClass('queen')){
+                        check = true
+                    }else if($(checkPiece).hasClass('rook')){
+                        check = true
+                    }
+                }
+                if($('tr').eq(kingRow).children().eq(i + 1).hasClass(turn) || ($('tr').eq(kingRow).children().eq(i + 1).hasClass(enemyColor))){
+                    piecesBlockingMove++
+                }
+
+                console.log(i + 1)
+                console.log(piecesBlockingMove)
+
+                i++
+                
+            }
+        }
+
+        //king to rleft side of board for rook moves
+        if(check == false){
+
+            piecesBlockingMove = 0;
+            i = kingIndex
+
+            while(i > 0 ){
+                
+
+                if(($('tr').eq(kingRow).children().eq(i - 1).hasClass(enemyColor)) && (piecesBlockingMove == 0 )){
+                    checkPiece = $('tr').eq(kingRow).children().eq(i - 1)
+                    if($(checkPiece).hasClass('queen')){
+                        check = true
+                    }else if($(checkPiece).hasClass('rook')){
+                        check = true
+                    }
+                }
+                if($('tr').eq(kingRow).children().eq(i - 1).hasClass(turn) || ($('tr').eq(kingRow).children().eq(i - 1).hasClass(enemyColor))){
+                    piecesBlockingMove++
+                }
+                // if($('tr').eq(kingRow).children().eq(kingIndex + i).hasClass('empty')){
+                //     piecesBlockingMove += 0
+                // }
+                console.log(i - 1)
+                console.log(piecesBlockingMove)
+
+                i--
+                
+            }
+        }
         return check;
     }
 
@@ -697,6 +759,7 @@ $( document ).ready(function() {
         
 
         $('td').removeClass('selected');
+        $('td').removeClass('checked');
         console.log(kingPiece)
         console.log(`${turn} - ${check}`)
         return turn;
