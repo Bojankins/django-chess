@@ -901,37 +901,114 @@ $( document ).ready(function() {
         //pieceIndex = 0
 
         //pawn pieces 
-        $(pieces).each(function (){
+        // $(pieces).each(function (){
 
-            if($(this).hasClass('pawn')){
-                validPieces.push($(this))
-               // pieceIndex++
-            }
+        //     if($(this).hasClass('pawn')){
+        //         validPieces.push($(this))
+        //        // pieceIndex++
+        //     }
 
-        });
+        // });
 
-        
+        $(pieces).each(function () {
 
-        $(validPieces).each(function () {
+            
             pieceRow = $(this).parent().index();
             pieceSpot = $(this)[0].cellIndex;
 
-            if(pieceSpot != 7){
-                spotOne = $('tr').eq(pieceRow - 1).children().eq(pieceSpot + 1);
+            //for pawn pieces
+            if($(this).hasClass('pawn')){
+                spotOne = 1;
+                spotTwo = 2;
+                
+                if(pieceSpot != 7){
+                    spotOne = $('tr').eq(pieceRow - 1).children().eq(pieceSpot + 1);
+                }
+                if(pieceSpot != 0){
+                    spotTwo = $('tr').eq(pieceRow - 1).children().eq(pieceSpot - 1);
+                }
+                if(spotOne !== 1){
+                    validSpots.push(spotOne)
+                }
+                if(spotTwo !== 2){
+                    validSpots.push(spotTwo);
+                }
             }
-            if(pieceSpot != 0){
-                spotTwo = $('tr').eq(pieceRow - 1).children().eq(pieceSpot - 1);
-            }
-            validSpots.push(spotOne);
-            validSpots.push(spotTwo)
 
+
+            //for rook moves
+            if($(this).hasClass('rook') || ($(this).hasClass('queen'))){
+                   
+                pieceRow = $(this).parent().index();
+                pieceSpot = $(this)[0].cellIndex;
+
+                index = pieceRow
+                //rook to front of board for rook moves
+
+                while(index > 0 ){
+                    spot = $('tr').eq(index - 1).children().eq(pieceSpot)
+                    if($(spot).hasClass('empty')){
+                        validSpots.push(spot)
+                    }else{
+                        break;
+                    }
+                    index--
+                }
+
+                pieceRow = $(this).parent().index();
+                pieceSpot = $(this)[0].cellIndex;
+
+                index = pieceRow
+                //rook to back of board for rook moves
+
+                while(index < 7 ){
+                    spot = $('tr').eq(index + 1).children().eq(pieceSpot)
+                    if($(spot).hasClass('empty')){
+                        validSpots.push(spot)
+                    }else{
+                        break;
+                    }
+                    index++
+                }
+
+                pieceRow = $(this).parent().index();
+                pieceSpot = $(this)[0].cellIndex;
+
+                index = pieceSpot
+                //rook to right of board for rook moves
+
+                while(index < 7){
+                    spot = $('tr').eq(pieceRow).children().eq(index + 1)
+                    if($(spot).hasClass('empty')){
+                        validSpots.push(spot)
+                    }else{
+                        break;
+                    }
+                    index++
+                }
+
+                pieceRow = $(this).parent().index();
+                pieceSpot = $(this)[0].cellIndex;
+
+                index = pieceSpot
+                //rook to left of board for rook moves            
+
+                while(index > 0 ){
+                    spot = $('tr').eq(pieceRow).children().eq(index - 1)
+                    if($(spot).hasClass('empty')){
+                        validSpots.push(spot)
+                    }else{
+                        break;
+                    }
+                    index--
+                }
+
+            }
+  
         })
 
-
-        //
         $(validSpots).each(function (){
 
-            console.log($(this))
 
             $(this).removeClass('togglebackcolor');
             $(this).removeClass('togglebackempty');
@@ -949,7 +1026,6 @@ $( document ).ready(function() {
                 $(this).addClass(`${turn}`)
             }
 
-            
             check = kingInCheck(kingPiece, enemyColor, piecesBlockingMove, check, turn)
 
             if(check == false){
@@ -970,6 +1046,11 @@ $( document ).ready(function() {
             }
 
         });
+
+        //rook moves
+
+
+        console.log(validSpots)
 
         console.log('checkmate = ' + checkmate);
 
