@@ -664,17 +664,57 @@ $( document ).ready(function() {
 
         //pawn moves
         if(check == false){
-            i = 1
-            while(i > -2){
-                if($('tr').eq(kingRow - 1).children().eq(kingIndex + i).hasClass(enemyColor) && $('tr').eq(kingRow - 1).children().eq(kingIndex + i).hasClass('pawn')){
+              
+                if($('tr').eq(kingRow - 1).children().eq(kingIndex + 1).hasClass(enemyColor) && ($('tr').eq(kingRow - 1).children().eq(kingIndex + 1).hasClass('pawn'))) {
                     check = true
+
+                    if((kingIndex + 1) == 8){
+                        console.log(check)
+                        check == false;
+                    }
+
                 }
-                i -= 2
-            }
-            
+
+                if($('tr').eq(kingRow - 1).children().eq(kingIndex - 1).hasClass(enemyColor) && ($('tr').eq(kingRow - 1).children().eq(kingIndex - 1).hasClass('pawn'))){
+                    check = true
+                    if((kingIndex - 1) == -1){
+                        console.log(check)
+                        check == false;
+                    }
+                }                    
         }
 
+        //bishop moves
+        if(check == false){
+
+            piecesBlockingMove = 0;
+
+            console.log(kingRow)
+            console.log(kingIndex)
+
+            index = kingIndex
+            row = kingRow
+            //bishop up right diagonal
+            while(((index) <= 6) && ((row) >= 1)){
+
+                console.log($('tr').eq(row - 1).children().eq(index + 1))
+                console.log(piecesBlockingMove)
+                if($('tr').eq(row - 1).children().eq(index + 1).hasClass('bishop') && (($('tr').eq(row - 1).children().eq(index + 1).hasClass(enemyColor))) && (piecesBlockingMove == 0)) {
+                     check = true;
+                }
+
+                if($('tr').eq(row -1).children().eq(index + 1).hasClass('empty')){
+                    piecesBlockingMove+= 0
+                }else{
+                    piecesBlockingMove++
+                }
+
+                index++
+                row--
+            }
+
         return check;
+        }
     }
 
     //move checks for pieces
