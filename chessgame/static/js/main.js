@@ -490,6 +490,7 @@ $( document ).ready(function() {
 
             check = kingInCheck(kingPiece, enemyColor, piecesBlockingMove, check, turn);
 
+            console.log(check)
             if(check == true){
                 checkCheckMate(kingPiece, enemyColor, piecesBlockingMove, check, turn)
             }
@@ -577,6 +578,7 @@ $( document ).ready(function() {
             }
 
         }
+
            
         //king to back of board for rook moves
         if(check == false){
@@ -688,19 +690,13 @@ $( document ).ready(function() {
         if(check == false){
 
             piecesBlockingMove = 0;
-
-            console.log(kingRow)
-            console.log(kingIndex)
-
             index = kingIndex
             row = kingRow
             //bishop up right diagonal
             while(((index) <= 6) && ((row) >= 1)){
 
-                console.log($('tr').eq(row - 1).children().eq(index + 1))
-                console.log(piecesBlockingMove)
-                if($('tr').eq(row - 1).children().eq(index + 1).hasClass('bishop') && (($('tr').eq(row - 1).children().eq(index + 1).hasClass(enemyColor))) && (piecesBlockingMove == 0)) {
-                     check = true;
+                if(($('tr').eq(row - 1).children().eq(index + 1).hasClass('bishop') || $('tr').eq(row - 1).children().eq(index + 1).hasClass('queen')) && (($('tr').eq(row - 1).children().eq(index + 1).hasClass(enemyColor))) && (piecesBlockingMove == 0)) {
+                    check = true;
                 }
 
                 if($('tr').eq(row -1).children().eq(index + 1).hasClass('empty')){
@@ -713,8 +709,82 @@ $( document ).ready(function() {
                 row--
             }
 
-        return check;
+            piecesBlockingMove = 0;
+
+
+            index = kingIndex
+            row = kingRow
+
+            //bishop down right diagonal
+            while(((index) <= 6) && ((row) <= 6)){
+
+
+                if(($('tr').eq(row + 1).children().eq(index + 1).hasClass('bishop')) || ($('tr').eq(row + 1).children().eq(index + 1).hasClass('queen'))  && (($('tr').eq(row + 1).children().eq(index + 1).hasClass(enemyColor))) && (piecesBlockingMove == 0)) {
+                     check = true;
+                }
+
+                if($('tr').eq(row + 1).children().eq(index + 1).hasClass('empty')){
+                    piecesBlockingMove+= 0
+                }else{
+                    piecesBlockingMove++
+                }
+
+                index++
+                row++
+            }
+
+            piecesBlockingMove = 0;
+
+
+            index = kingIndex
+            row = kingRow
+            //bishop up left diagonal
+            while(((index) >= 1 ) && ((row) >= 1)){
+
+                if(($('tr').eq(row - 1).children().eq(index - 1).hasClass('bishop')) || ($('tr').eq(row - 1).children().eq(index - 1).hasClass('queen')) && (($('tr').eq(row - 1).children().eq(index - 1).hasClass(enemyColor))) && (piecesBlockingMove == 0)) {
+                     check = true;
+                }
+
+                if($('tr').eq(row - 1).children().eq(index - 1).hasClass('empty')){
+                    piecesBlockingMove+= 0
+                }else{
+                    piecesBlockingMove++
+                }
+
+                index--
+                row--
+            }
+
+            piecesBlockingMove = 0;
+
+
+            index = kingIndex
+            row = kingRow
+
+            //bishop down left diagonal
+            while(((index) >= 1) && ((row) <= 6)){
+
+
+                if(($('tr').eq(row + 1).children().eq(index - 1).hasClass('bishop')) || ($('tr').eq(row + 1).children().eq(index - 1).hasClass('queen')) && (($('tr').eq(row + 1).children().eq(index - 1).hasClass(enemyColor))) && (piecesBlockingMove == 0)) {
+                     check = true;
+                }
+
+                if($('tr').eq(row + 1).children().eq(index - 1).hasClass('empty')){
+                    piecesBlockingMove+= 0
+                }else{
+                    piecesBlockingMove++
+                }
+
+                index--
+                row++
+            }
+
+            //knight moves
+
+            //(Math.abs(validSpotIndex - pieceIndex) == 1) && (validSpot == (pieceRow - 2)) && ($(spot).is(`.empty , .${enemyColor}`))
+
         }
+        return check;
     }
 
     //move checks for pieces
@@ -1044,6 +1114,96 @@ $( document ).ready(function() {
                 }
 
             }
+
+            if($(this).hasClass('bishop') || $(this).hasClass('queen')){
+
+                pieceRow = $(this).parent().index();
+                pieceSpot = $(this)[0].cellIndex;
+
+                index = pieceSpot
+                row = pieceRow
+
+                //bishop up right diagonal
+                while(row >= 1 && index <= 6){
+
+                    spot = $('tr').eq(row - 1).children().eq(index + 1)
+
+                    if($(spot).hasClass('empty')){
+                        validSpots.push(spot);
+                    }else{
+                        break;
+                    }
+                    row--
+                    index++
+                }
+
+                pieceRow = $(this).parent().index();
+                pieceSpot = $(this)[0].cellIndex;
+
+                index = pieceSpot
+                row = pieceRow
+
+                //bishop down right diagonal
+                while(row <= 6 && index <= 6){
+
+
+                    spot = $('tr').eq(row + 1).children().eq(index + 1)
+
+                    if($(spot).hasClass('empty')){
+                        validSpots.push(spot);
+                    }else{
+                        break;
+                    }
+                    row++
+                    index++
+                }
+
+                pieceRow = $(this).parent().index();
+                pieceSpot = $(this)[0].cellIndex;
+
+                index = pieceSpot
+                row = pieceRow
+
+                //bishop up left diagonal
+                while(row >= 1 && index >= 1){
+
+
+                    spot = $('tr').eq(row - 1).children().eq(index - 1)
+
+                    if($(spot).hasClass('empty')){
+                        validSpots.push(spot);
+                    }else{
+                        break;
+                    }
+                    row--
+                    index--
+                }
+
+                pieceRow = $(this).parent().index();
+                pieceSpot = $(this)[0].cellIndex;
+
+                index = pieceSpot
+                row = pieceRow
+
+                //bishop down left diagonal
+                while(row <= 6 && index >= 1){
+
+
+                    spot = $('tr').eq(row + 1).children().eq(index - 1)
+
+                    if($(spot).hasClass('empty')){
+                        validSpots.push(spot);
+                    }else{
+                        break;
+                    }
+                    row++
+                    index--
+                }
+
+                console.log($(validSpots).eq('bishop'))
+
+
+            }
   
         })
 
@@ -1067,7 +1227,6 @@ $( document ).ready(function() {
             }
 
             check = kingInCheck(kingPiece, enemyColor, piecesBlockingMove, check, turn)
-
             if(check == false){
                 checkmate = false
                 check = true
@@ -1089,8 +1248,6 @@ $( document ).ready(function() {
 
         //rook moves
 
-
-        console.log(validSpots)
 
         console.log('checkmate = ' + checkmate);
 
